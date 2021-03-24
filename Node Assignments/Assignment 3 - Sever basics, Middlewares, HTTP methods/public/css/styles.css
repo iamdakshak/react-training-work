@@ -1,0 +1,19 @@
+body {
+  margin: 0 auto;
+  padding-top: 145px;
+}
+img {
+  border: 5px solid cornflowerblue;
+  border-radius: 10px;
+  width: 50%;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: auto;
+  /* margin-top: auto; */
+  transition: transform 0.2s; /* Animation */
+}
+img:hover {
+  transform: scale(1.5);
+}
