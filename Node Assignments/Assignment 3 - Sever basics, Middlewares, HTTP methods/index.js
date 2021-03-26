@@ -18,11 +18,39 @@ let logger = (req, res, next) => {
 };
 app.use("/request", logger);
 // 4. Create an error on `/error` path and pass it to the next function. Depending on the type of error message you are showing, use proper error status codes to show the error.
-let errorFunct = (req, res, next, err) => {
-  console.log("Error");
-  next();
-};
-app.use("/error", errorFunct, (req, res, err) => res.send(`${err}`));
+// let errorFunct = (req, res, next) => {
+//   if(res.status(404)){
+//     res.send("<h1>Page Not found!</h1>")
+//   }else if(res.status(401)){
+//     res.send('<h1>Unauthorized</h1>')
+//   }
+//   }else if(res.status(500)){
+//     res.send('<h1>Internal Server Error</h1>')
+//   }else{
+//     res.status(403).send('<h1>Error found!</h1>')
+//   }
+//   next()
+// };
+// app.use("/error", errorFunct);
+app.use((req, res, next) => {
+  if (req.status(403)) {
+    res.send("<h1>ERROR FOUND</h1>");
+    next();
+  } else if (req.status(404)) {
+    res.send("<h1>PAGE NOT FOUND</h1>");
+    next();
+  } else if (req.status(500)) {
+    res.send("<h1>INTERNAL SERVER ERROR</h1>");
+    next();
+  } else if (req.status(200)) {
+    res.send("<h1>COnnected!</h1>");
+    next();
+  } else console.log("No error");
+});
+// app.use((req, res, next) => {
+//   res.status(404).send("<h1>Page not found</h1>");
+//   console.log("Error");
+// });
 // 5. Create a basic form on the path `/form` and add a post request to this form. This is a register form which should have name, email, password and confirm password fields. You can use any view engine for this. In the post method, add validation to the form. Validation criteria is given below:
 //    a. Email should be valid email
 //    b. Password and confirm password should match
