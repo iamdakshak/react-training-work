@@ -18,7 +18,11 @@ let logger = (req, res, next) => {
 };
 app.use("/request", logger);
 // 4. Create an error on `/error` path and pass it to the next function. Depending on the type of error message you are showing, use proper error status codes to show the error.
-
+let errorFunct = (req, res, next, err) => {
+  console.log("Error");
+  next();
+};
+app.use("/error", errorFunct, (req, res, err) => res.send(`${err}`));
 // 5. Create a basic form on the path `/form` and add a post request to this form. This is a register form which should have name, email, password and confirm password fields. You can use any view engine for this. In the post method, add validation to the form. Validation criteria is given below:
 //    a. Email should be valid email
 //    b. Password and confirm password should match
