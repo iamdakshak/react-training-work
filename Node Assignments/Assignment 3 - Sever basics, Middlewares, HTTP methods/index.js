@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const exphbs = require("express-handlebars");
+const { check, validationResult } = require("express-validator");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -8,6 +9,10 @@ const PORT = process.env.PORT || 5000;
 //Express Handlebars Middleware
 app.engine("handlebars", exphbs());
 app.set("view engine", "handlebars");
+
+//Body Parser Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // 1. Create a basic express server and display an image of your choice on the homepage using static files.
 app.use(express.static(path.join(__dirname, "public")));
@@ -67,6 +72,30 @@ app.get("/form", (req, res) =>
   res.render("index", {
     title: "Signup Form",
   })
+);
+app.post(
+  "/register",
+  [
+    check("name").not().isEmpty().withMessage("Name is required"),
+    check("email", "Email is required").normalizeEmail().isEmail(),
+    check("password", "Password with 5+ characters required")
+      .isLength({ min: 5 })
+      .custom((val, { req, loc, path }) => {
+        if (val !== req.body.confirm_password)
+          throw new Error("Password's don't match!");
+        return value;
+      }),
+  ],
+  (req, res) => {
+    var errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // return res.status(422).json(errors.array());
+      const alert = errors.array();
+      res.render("index", {
+        alert,
+      });
+    }
+  }
 );
 
 app.listen(PORT, () => console.log("Server started on port ", PORT));
